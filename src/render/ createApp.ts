@@ -153,7 +153,7 @@ export function createApp({
 
   const appObject = {
     root,
-    app,
+    app: app().trim().replace(/\n/g, ""),
     middlewares,
   }
 

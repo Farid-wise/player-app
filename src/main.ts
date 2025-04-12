@@ -19,4 +19,4 @@ const app = createApp({
 });
 
 
-console.log(app.app());
+console.log(app);
