@@ -6,7 +6,9 @@ createApp({
   root: "#app",
   app: App,
   onInited() {
+
     
   },
+ 
  
 });
