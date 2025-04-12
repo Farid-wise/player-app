@@ -6,6 +6,7 @@ interface ICreateApp {
    * The CSS selector for the root element of the app.
    */
   root: string;
+  middlewares: (() => void)[];
 
   /**
    * A function that returns the app as a string.
@@ -20,10 +21,13 @@ interface ICreateApp {
    */
   render: ({
     onInited,
+    middlewares,
     beforeInited,
   }: {
     onInited?: () => void;
     beforeInited?: () => void;
+    middlewares: (() => void)[];
+
   }) => void;
 }
 
@@ -39,6 +43,7 @@ class CreateApp implements ICreateApp {
   static instance: CreateApp | null = null;
 
   root: string;
+  middlewares: (() => void)[] = [];
   app: () => string;
 
   /**
@@ -49,6 +54,8 @@ class CreateApp implements ICreateApp {
   private constructor(root: string, app: () => string) {
     this.root = root;
     this.app = app;
+
+    
   }
 
   /**
@@ -64,7 +71,9 @@ class CreateApp implements ICreateApp {
   public static createApp(root: string, app: () => string): CreateApp {
     if (!this.instance) {
       this.instance = new CreateApp(root, app);
+
     }
+
 
     return this.instance;
   }
@@ -78,11 +87,15 @@ class CreateApp implements ICreateApp {
    */
   public render({
     beforeInited,
+    middlewares,
     onInited,
   }: {
     beforeInited?: () => void;
+    middlewares: (() => void)[];
     onInited?: () => void;
   }) {
+
+
     beforeInited && beforeInited();
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -94,11 +107,20 @@ class CreateApp implements ICreateApp {
           const scripts = appElement.querySelectorAll("script");
           scripts.forEach((script) => script.remove());
           root.innerHTML = appElement.body.innerHTML;
-          onInited && onInited();
+          if(document.readyState === "interactive") {
+            onInited && onInited();
+          }
         }
       }
     });
+
+    this.middlewares?.push(...middlewares);
+
+    this.middlewares?.forEach((middleware) => middleware());
+
   }
+
+  
 }
 
 /**
@@ -112,10 +134,12 @@ export function createApp({
   root,
   app,
   beforeInited,
+  middlewares,
   onInited,
 }: {
   root: string;
   app: () => string;
+  middlewares?: (() => void)[];
   init?: boolean;
   beforeInited?: () => void;
   onInited?: () => void;
@@ -123,5 +147,6 @@ export function createApp({
   CreateApp.createApp(root, app).render({
     beforeInited: beforeInited && beforeInited,
     onInited: onInited && onInited,
+    middlewares: middlewares || []
   });
 }
