@@ -2,7 +2,7 @@ import { App } from "./components/App";
 import { createApp } from "./render/ createApp";
 import "./style/app.css";
 
-createApp({
+const app = createApp({
   root: "#app",
   app: App,
   middlewares: [() => console.log(2)],
@@ -17,3 +17,6 @@ createApp({
  
  
 });
+
+
+console.log(app.app());

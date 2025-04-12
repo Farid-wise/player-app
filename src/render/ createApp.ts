@@ -123,11 +123,17 @@ class CreateApp implements ICreateApp {
   
 }
 
+
 /**
- * Creates a new instance of the CreateApp class, calls the render method and returns nothing.
- * @param {{root: string, app: () => string, init?: boolean, beforeInited?: () => void, onInited?: () => void}} options Options object with two properties:
- *   - `root`: The CSS selector for the root element of the app.
- *   - `app`: A function that returns the app as a string.
+ * Creates and renders an app.
+ * @param {{
+ *   root: string;
+ *   app: () => string;
+ *   middlewares?: (() => void)[];
+ *   init?: boolean;
+ *   beforeInited?: () => void;
+ *   onInited?: () => void;
+ * }} options The options for creating the app.
  * @returns {void} Nothing.
  */
 export function createApp({
@@ -144,9 +150,18 @@ export function createApp({
   beforeInited?: () => void;
   onInited?: () => void;
 }) {
+
+  const appObject = {
+    root,
+    app,
+    middlewares,
+  }
+
   CreateApp.createApp(root, app).render({
     beforeInited: beforeInited && beforeInited,
     onInited: onInited && onInited,
     middlewares: middlewares || []
   });
+
+  return appObject;
 }
