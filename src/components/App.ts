@@ -1,3 +1,5 @@
+import { Spectogram } from "./ui/Spectogram";
+
 const H1 = ({title}: {title: string}) => {
     return `
         <h1>${title}</h1>
@@ -16,7 +18,7 @@ export const App = () => {
         <div class="row audio-holder">
             <audio id="audio" controls></audio>
             <label class="input-holder">Autoplay<input type="checkbox" id="autoplayToggle" checked /></label>
-            <canvas id="spectrogramm" width="300" height="100"></canvas>
+            ${Spectogram()}
         </div>
 
         <div id="scrollContainer" style="overflow-x: auto; width: 100%; border: 1px solid #ccc;">
