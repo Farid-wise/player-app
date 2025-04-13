@@ -1,8 +1,17 @@
+const H1 = ({title}: {title: string}) => {
+    return `
+        <h1>${title}</h1>
+    `
+}
+
+
 export const App = () => {
     return `
         
     
-        <h1>Choose MP3/WAV file</h1>
+        ${H1({
+            title: 'Choose MP3/WAV file'
+        })}
         <input type="file" id="fileInput" accept=".mp3, .wav" />
         <div class="row audio-holder">
             <audio id="audio" controls></audio>
