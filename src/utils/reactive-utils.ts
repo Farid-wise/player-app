@@ -11,22 +11,40 @@ import { delay } from "./delay";
  *   when the value is set.
  * @returns {Proxy<T>} A reactive reference to the value.
  */
-export function ref<T>(value: T, callback?: (val: T) => void) {
+export function ref<T = any>(value: T, callback?: (val: T, flushState?: () => void) => void) {
   const wrapper = {
     value,
   };
+
+  /**
+   * Flushes the state of the reactive reference by setting its value to null.
+   * This is used internally by the proxy to force the value to be re-fetched
+   * from the original source when the value is set.
+   * @returns {void} Nothing.
+   */
+  const flushState = () => {
+    // @ts-ignore
+    wrapper.value = null
+  };
+
+  // @ts-ignore
+  window.appState = wrapper;
 
   return new Proxy(wrapper, {
     get(target, key) {
       if (key === "value") {
         return target[key];
       }
+      // @ts-ignore
+      window.appState = wrapper;
       return undefined;
     },
     set(target, key, newValue) {
       if (key === "value") {
         target[key] = newValue;
-        callback && callback(newValue);
+        callback && callback(newValue, flushState);
+        // @ts-ignore
+        window.appState = wrapper;
         return true;
       }
       return false;
