@@ -10,6 +10,7 @@ import { ref } from "../utils/reactive-utils";
  */
 export const usePlayer = () => {
     
+
   const fileInput = $("#fileInput") as HTMLInputElement;
   const audioEl = $("#audio") as HTMLAudioElement;
   const peakList = $("#peaksList");
