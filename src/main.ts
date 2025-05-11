@@ -14,6 +14,7 @@ createApp({
     player.initApp()
 
 
+
   },
   beforeInited() {
   },
@@ -21,5 +22,7 @@ createApp({
  
  
 });
+
+
 
 

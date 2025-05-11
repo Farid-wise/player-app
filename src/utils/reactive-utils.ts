@@ -11,7 +11,10 @@ import { delay } from "./delay";
  *   when the value is set.
  * @returns {Proxy<T>} A reactive reference to the value.
  */
-export function ref<T = any>(value: T, callback?: (val: T, flushState?: () => void) => void) {
+export function ref<T = any>(
+  value: T,
+  callback?: (val: T, flushState?: () => void) => void
+) {
   const wrapper = {
     value,
   };
@@ -24,11 +27,9 @@ export function ref<T = any>(value: T, callback?: (val: T, flushState?: () => vo
    */
   const flushState = () => {
     // @ts-ignore
-    wrapper.value = null
+    wrapper.value = null;
   };
 
-  // @ts-ignore
-  window.appState = wrapper;
 
   return new Proxy(wrapper, {
     get(target, key) {
