@@ -27,6 +27,8 @@ export const App = () => {
 
         </div>
 
+
+
         <div id="scrollContainer" style="overflow-x: auto; width: 100%; border: 1px solid #ccc;">
             ${WaveForm()}
         </div>
@@ -36,6 +38,8 @@ export const App = () => {
         </div>
         <h2>Top peaks (10%):</h2>
         <div id="peaksList"></div>
+        <user-card name="Fari2d"></user-card>
+
 
         
         
