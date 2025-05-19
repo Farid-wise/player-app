@@ -67,3 +67,20 @@ export function defineCustomTag<T extends Record<string, any>>(
 
   customElements.define(tagName, CustomTag);
 }
+
+
+ //@example
+ 
+  //  defineCustomTag<{ name: string }>(
+  //     "user-card",
+  //     (props) => `
+  //    <div>${props.name}</div>
+    
+  //   `,
+  //     `
+  //    div {
+  //       color: red;
+  //    }
+    
+  //   `
+  //   );

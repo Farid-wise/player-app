@@ -27,7 +27,6 @@ interface ICreateApp {
     onInited?: () => void;
     beforeInited?: () => void;
     middlewares: (() => void)[];
-
   }) => void;
 }
 
@@ -54,8 +53,6 @@ class CreateApp implements ICreateApp {
   private constructor(root: string, app: () => string) {
     this.root = root;
     this.app = app;
-
-    
   }
 
   /**
@@ -71,9 +68,7 @@ class CreateApp implements ICreateApp {
   public static createApp(root: string, app: () => string): CreateApp {
     if (!this.instance) {
       this.instance = new CreateApp(root, app);
-
     }
-
 
     return this.instance;
   }
@@ -94,8 +89,6 @@ class CreateApp implements ICreateApp {
     middlewares: (() => void)[];
     onInited?: () => void;
   }) {
-
-
     beforeInited && beforeInited();
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -107,7 +100,7 @@ class CreateApp implements ICreateApp {
           const scripts = appElement.querySelectorAll("script");
           scripts.forEach((script) => script.remove());
           root.innerHTML = appElement.body.innerHTML;
-          if(document.readyState === "interactive") {
+          if (document.readyState === "interactive") {
             onInited && onInited();
           }
         }
@@ -117,51 +110,49 @@ class CreateApp implements ICreateApp {
     this.middlewares?.push(...middlewares);
 
     this.middlewares?.forEach((middleware) => middleware());
-
   }
-
-  
+}
+interface AppOptions {
+  root: string;
+  app: () => string;
+  middlewares?: (() => void)[];
+  customComponents?: (() => void)[];
+  beforeInited?: () => void;
+  onInited?: () => void;
 }
 
-
 /**
- * Creates and renders an app.
- * @param {{
- *   root: string;
- *   app: () => string;
- *   middlewares?: (() => void)[];
- *   init?: boolean;
- *   beforeInited?: () => void;
- *   onInited?: () => void;
- * }} options The options for creating the app.
- * @returns {void} Nothing.
+ * Initializes and renders an application by creating a singleton instance of the `CreateApp` class.
+ * It sets up the root element and applies the specified middlewares and custom components.
+ *
+ * @param {AppOptions} options - The options for creating the app.
+ * @param {string} options.root - The CSS selector for the root element where the app will be rendered.
+ * @param {() => string} options.app - A function that returns the app's HTML as a string.
+ * @param {(() => void)[]} [options.middlewares] - An array of middleware functions to be executed during the app's initialization.
+ * @param {(() => void)[]} [options.customComponents] - An array of functions to initialize custom components.
+ * @param {() => void} [options.beforeInited] - A callback function to be executed before the app's initialization starts.
+ * @param {() => void} [options.onInited] - A callback function to be executed after the app's initialization is complete.
  */
+
 export function createApp({
   root,
   app,
   beforeInited,
-  middlewares,
+  customComponents = [],
+  middlewares = [],
   onInited,
-}: {
-  root: string;
-  app: () => string;
-  middlewares?: (() => void)[];
-  init?: boolean;
-  beforeInited?: () => void;
-  onInited?: () => void;
-}) {
+}: AppOptions) {
+  const appInstance = CreateApp.createApp(root, () =>
+    app().trim().replace(/\n/g, "")
+  );
 
-  const appObject = {
-    root,
-    app: app().trim().replace(/\n/g, ""),
+  appInstance.render({
+    beforeInited,
     middlewares,
-  }
+    onInited: () => {
+      customComponents.forEach((initComponent) => initComponent());
 
-  CreateApp.createApp(root, app).render({
-    beforeInited: beforeInited && beforeInited,
-    onInited: onInited && onInited,
-    middlewares: middlewares || []
+      onInited?.();
+    },
   });
-
-  return appObject;
 }

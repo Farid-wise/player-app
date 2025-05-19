@@ -7,14 +7,22 @@
  * @returns {(NodeList | Element | undefined)} - The result of the dom query.
  */
 export const $ = (selector: string) => {
-    if(document.querySelectorAll(selector).length > 1){
-        return document.querySelectorAll(selector);
+  if (document.querySelectorAll(selector).length > 1) {
+    return document.querySelectorAll(selector);
+  } else {
+    if (document.querySelector(selector)) {
+      return document.querySelector(selector);
     }
-    else {
-        if(document.querySelector(selector)){
-            return document.querySelector(selector);
-    
-        }
-    }
-  
+  }
+};
+
+/**
+ * Extracts the shadow root of an element.
+ * @param {string} element - The element to extract the shadow root from.
+ * @returns {(ShadowRoot | undefined)} - The shadow root or undefined if the element is not found.
+ */
+export function extractShadow(element: string) {
+  if (document.querySelector(element)) {
+    return document.querySelector(element)?.shadowRoot;
+  }
 }
